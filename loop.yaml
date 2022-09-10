@@ -1,0 +1,57 @@
+---
+- name: testing loops
+  hosts: all
+  tasks:
+  - name: Add several users
+    ansible.builtin.user:
+        name: "{{ item }}"
+        state: present
+        groups: "wheel"
+    loop:
+     - testuser5
+     - testuser6
+     - testuser7
+    when: ansible_os_family == "debain" and ansible_distribution_version == "6"
+
+#  tasks:
+  - name: uninstall multiple pkg
+    yum:
+      name: "{{ item }}"
+      state: absent
+    loop:
+      - vim
+      - ntp
+      - vsftpd
+
+  - name: installing multiple pkg
+    yum:
+      name: "{{ item }}"
+      state: latest
+    loop:
+      - vim
+      - ntp
+      - vsftpd
+
+  - name: start ntpd service
+    service:
+      name: "{{ item }}"
+      state: restarted
+    loop:
+      - ntpd
+      - vsftpd
+
+  - name: Here we are running command module to run a command "hostname"
+    command: df -hT
+    register: disk_output
+  - debug:
+      var: disk_output.stdout_lines
+      
+  - name: Add several users
+    ansible.builtin.user:
+      name: "{{ item.name }}"
+      state: present
+      groups: "{{ item.groups }}"
+    loop:
+      - { name: 'testuser3', groups: 'wheel' }
+      - { name: 'testuser4', groups: 'root' }
+
