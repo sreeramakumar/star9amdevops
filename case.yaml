@@ -1,0 +1,25 @@
+---
+- name: install Apache Web-Server
+  hosts: all
+  vars_prompt:
+    - name: var
+      prompt: "Process to install rpm packages\n1 -> To install httpd press 1\n2 -> To install vsftpd press 2\n3 to uninstall package press 3"
+      private: no
+    - name: var2
+      prompt: "provide a package name to uninstall"
+      private: no
+  vars:
+    pkg1: httpd
+    pkg2: vsftpd
+  tasks:
+    - name: Install Apache on CentOS  Server
+      yum: name= "{{ pkg1 }}"  state=present
+      when: var == "1"
+
+    - name: Install ftp on centos Server
+      yum: name= "{{ pkg2 }}" state=present
+      when: var == "2"
+
+    - name: uninstall packages
+      yum: name= "{{ var2 }}" state=absent
+      when: var == "3"
